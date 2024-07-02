@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Operating Bot</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-image: url('background.jpg'); /* 背景画像のURLを指定 */
+    background-size: cover; /* 背景画像をカバーできるサイズに調整 */
+    background-position: center; /* 背景画像を中央に配置 */
+    background-repeat: no-repeat; /* 背景画像の繰り返しを無効化 */
+  }
+  .header {
+    background-color: #333; /* ヘッダーの背景色 */
+    color: #fff; /* ヘッダーのテキスト色 */
+    padding: 10px;
+    text-align: right;
+  }
+  .header a {
+    color: #fff; /* リンクの色 */
+    text-decoration: none; /* 下線を消す */
+    margin-left: 10px; /* ボタン間の余白 */
+    padding: 8px 12px; /* ボタンの内側の余白 */
+    border: 1px solid #fff; /* ボタンの枠線 */
+    border-radius: 4px; /* ボタンの角の丸み */
+  }
+  .header a:hover {
+    background-color: #555; /* ホバー時の背景色 */
+  }
+
+  .form-container {
+    max-width: 400px;
+    margin: 50px auto;
+    background: #f2f2f2;
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    display: none; /* 最初は非表示 */
+  }
+  .form-container h2 {
+    text-align: center;
+  }
+  .form-container input[type="text"],
+  .form-container input[type="password"],
+  .form-container input[type="email"],
+  .form-container textarea {
+    width: 100%;
+    padding: 10px;
+    margin: 10px 0;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+  }
+  .form-container button,
+  .header button {
+    width: auto;
+    padding: 8px 12px;
+    background-color: #333;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-left: 10px;
+  }
+  .form-container button:hover,
+  .header button:hover {
+    background-color: #555;
+  }
+
+  /* Discordマークのスタイル */
+  .discord-mark {
+    display: inline-block;
+    vertical-align: middle;
+    margin-right: 10px;
+    width: 24px; /* Discordマークの幅 */
+    height: 24px; /* Discordマークの高さ */
+  }
+
+  /* 左上に表示するタイトルのスタイル */
+  .site-title {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    font-size: 24px;
+    color: #fff;
+  }
+</style>
+</head>
+<body>
+  <div class="site-title">Operating Bot</div>
+
+  <header class="header">
+    <a href="#">ログイン</a>
+    <a href="#">サインアップ</a>
+    <a href="#" id="email-link">メールを送信</a>
+    <button onclick="downloadDiscordInstaller()">Discordをダウンロード</button>
+  </header>
+  
+  <div class="form-container" id="login-form">
+    <h2>ログイン</h2>
+    <form>
+      <input type="text" placeholder="ユーザー名" required>
+      <input type="password" placeholder="パスワード" required>
+      <button type="submit">ログイン</button>
+    </form>
+  </div>
+
+  <div class="form-container" id="signup-form">
+    <h2>サインアップ</h2>
+    <form>
+      <input type="text" placeholder="ユーザー名" required>
+      <input type="password" placeholder="パスワード" required>
+      <button type="submit">サインアップ</button>
+    </form>
+  </div>
+
+  <div class="form-container" id="email-form" style="display: none;">
+    <h2>メールを送信する</h2>
+    <form id="email-send-form">
+      <input type="text" placeholder="お名前" id="name" required>
+      <input type="email" placeholder="メールアドレス" id="email" required>
+      <textarea placeholder="メッセージ内容" id="message" rows="5" required></textarea>
+      <button type="submit">送信</button>
+    </form>
+  </div>
+
+  <div style="text-align: center; margin-top: 50px;">
+    <h2>Operating Botの利用規約とプライバシーポリシー（EULA）</h2>
+    <p>このBotを追加することで、以下の利用規約に同意したものとみなします。</p>
+
+    <h3>利用規約</h3>
+    <p>この利用規約は、当Botを使用する際の利用条件を定めるものです。ユーザーは、この利用規約に従って利用する必要があります。</p>
+
+    <h4>適用</h4>
+    <p>本規約は、当Botに関連する開発者とユーザーの間のすべての関係に適用されます。</p>
+
+    <h4>禁止事項</h4>
+    <ul>
+      <li>日本国の法律、または公序良俗に反する行為</li>
+      <li>当Bot関連の著作権等の知的財産権を侵害する行為</li>
+      <li>他ユーザーへの迷惑行為</li>
+      <li>当Botを用いた情報の商業利用</li>
+      <li>当Botの運営・開発を妨害する行為</li>
+      <li>個人情報の特定などのための利用</li>
+      <li>当Botを用いた宣伝、広告行為</li>
+      <li>その他、開発者が不適切と判断する行為</li>
+    </ul>
+
+    <h4>サービスの停止</h4>
+    <p>当Botは、通常はサポートサーバーを通じて停止を通知しますが、予期せぬサーバーの問題により告知なく停止する場合があります。この停止による不利益や損害について、開発者は責任を負いません。</p>
+
+    <h4>利用制限</h4>
+    <p>禁止事項に違反した場合、開発者はユーザーのBot利用を停止する権利を有します。この停止により生じた不利益についても、開発者は責任を負いません。</p>
+
+    <h4>免責事項</h4>
+    <ul>
+      <li>開発者は、当Botのバグや予期せぬ動作の存在を完全に保証しません。</li>
+      <li>バグによる損害が、開発者のプライバシーポリシーに違反していない場合、開発者は責任を負いません。</li>
+      <li>当Botによる争いや不利益についても、開発者は責任を負いません。</li>
+    </ul>
+
+    <h4>利用規約の改定</h4>
+    <p>開発者は、新機能や環境の変化に応じて、Botの利用規約を必要に応じて変更する権利を有します。変更がある場合は、利用者に通知します。</p>
+
+    <h4>準拠法</h4>
+    <p>本規約は、日本国の法令に準拠します。</p>
+
+    <h3>プライバシーポリシー</h3>
+    <p>このプライバシーポリシーは、利用者から収集した情報の使用に関する内容です。Botを導入・使用する場合、このプライバシーポリシーに同意したとみなされます。</p>
+
+    <p>詳細については、<a href="https://discord.gg/aRHbh9tBRr" target="_blank">サポートサーバー</a>での問い合わせをお願いします。</p>
+  </div>
+
+
+  <script>
+    // ログイン・サインアップの切り替え
+    document.querySelector('.header a:nth-child(1)').addEventListener('click', function() {
+      document.getElementById('login-form').style.display = 'block';
+      document.getElementById('signup-form').style.display = 'none';
+      document.getElementById('email-form').style.display = 'none';
+    });
+    document.querySelector('.header a:nth-child(2)').addEventListener('click', function() {
+      document.getElementById('signup-form').style.display = 'block';
+      document.getElementById('login-form').style.display = 'none';
+      document.getElementById('email-form').style.display = 'none';
+    });
+
+    // メールフォームの表示切り替え
+    document.getElementById('email-link').addEventListener('click', function(event) {
+      event.preventDefault();
+      document.getElementById('email-form').style.display = 'block';
+      document.getElementById('login-form').style.display = 'none';
+      document.getElementById('signup-form').style.display = 'none';
+    });
+
+    // Discordのインストーラーをダウンロード
+    function downloadDiscordInstaller() {
+      window.open("https://discord.com/api/download?platform=win", "_blank");
+    }
+
+    // メール送信成功時のアラート
+    document.getElementById('email-send-form').addEventListener('submit', function(event) {
+      event.preventDefault();
+      // この部分に実際のメール送信処理を追加する必要があります（サーバーサイドで行います）。
+      alert('メールを送信しました！');
+    });
+  </script>
+</body>
+</html>
